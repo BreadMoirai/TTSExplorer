@@ -44,6 +44,7 @@ dependencies {
 tasks {
     compileKotlin {
         kotlinOptions.jvmTarget = "16"
+        kotlinOptions.freeCompilerArgs += "-Xopt-in=kotlin.RequiresOptIn"
     }
     compileTestKotlin {
         kotlinOptions.jvmTarget = "16"

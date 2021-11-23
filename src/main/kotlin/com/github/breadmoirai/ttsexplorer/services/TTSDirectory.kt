@@ -1,15 +1,19 @@
 package com.github.breadmoirai.ttsexplorer.services
 
+import com.github.breadmoirai.ttsexplorer.model.WorkshopFileInfo
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 
-class TTSDirectory(val rootDir: File) {
+class TTSDirectory(private val rootDir: File) {
     companion object {
         fun defaultDir(): File? {
             return when {
-                SystemUtils.IS_OS_WINDOWS -> SystemUtils.getUserHome().resolve("Documents\\My Games\\Tabletop Simulator")
-                SystemUtils.IS_OS_MAC -> SystemUtils.getUserHome().resolve("Library/Tabletop Simulator")
-                SystemUtils.IS_OS_LINUX -> SystemUtils.getUserHome().resolve(".local/share/Tabletop Simulator")
+                SystemUtils.IS_OS_WINDOWS -> SystemUtils.getUserHome()
+                    .resolve("Documents\\My Games\\Tabletop Simulator")
+                SystemUtils.IS_OS_MAC -> SystemUtils.getUserHome()
+                    .resolve("Library/Tabletop Simulator")
+                SystemUtils.IS_OS_LINUX -> SystemUtils.getUserHome()
+                    .resolve(".local/share/Tabletop Simulator")
                 else -> null
             }
         }
@@ -31,6 +35,20 @@ class TTSDirectory(val rootDir: File) {
         // TODO
         return ValidationResult.success()
     }
+}
+
+class ModsDirectory(private val modDir: File) {
+    private val modListFile: File = modDir.resolve("WorkshopFileInfos.json")
+    val hasModList: Boolean
+        get() = _modList != null
+    private val _modList: List<WorkshopFileInfo>? by lazy(::readModList)
+    val modList: List<WorkshopFileInfo>
+        get() = _modList!!
+
+    private fun readModList(): List<WorkshopFileInfo>? {
+        
+    }
+
 }
 
 data class ValidationResult(val success: Boolean, val message: String) {
