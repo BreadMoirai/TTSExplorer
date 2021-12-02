@@ -1,29 +1,21 @@
 package com.github.breadmoirai.ttsexplorer.view
 
-import com.github.breadmoirai.ttsexplorer.jfx.savePath
+import com.github.breadmoirai.ttsexplorer.jfx.Preferences
 import com.github.breadmoirai.ttsexplorer.jfx.toggleBinding
-import com.github.breadmoirai.ttsexplorer.mfx.fontButton
+import com.github.breadmoirai.ttsexplorer.mfx.icon
 import com.github.breadmoirai.ttsexplorer.mfx.label
+import com.github.breadmoirai.ttsexplorer.mfx.raisedButton
+import com.github.breadmoirai.ttsexplorer.mfx.textfield
+import io.github.palexdev.materialfx.effects.DepthLevel
 import javafx.geometry.Pos
 import javafx.scene.layout.Priority
 import javafx.scene.paint.Color
 import javafx.stage.FileChooser
 import javafx.stage.StageStyle
+import org.kordamp.ikonli.javafx.FontIcon
 import org.kordamp.ikonli.material2.Material2AL
 import org.kordamp.ikonli.material2.Material2MZ
-import tornadofx.View
-import tornadofx.box
-import tornadofx.c
-import tornadofx.hbox
-import tornadofx.hgrow
-import tornadofx.onLeftClick
-import tornadofx.px
-import tornadofx.spacer
-import tornadofx.stackpane
-import tornadofx.style
-import tornadofx.textfield
-import tornadofx.vbox
-import tornadofx.vgrow
+import tornadofx.*
 
 class MainView : View("TTS Explorer") {
     override val root = vbox {
@@ -51,7 +43,7 @@ class MainView : View("TTS Explorer") {
                     style {
                         padding = box(5.px)
                     }
-                    fontButton(Material2AL.FULLSCREEN, 20) { icon ->
+                    icon(Material2AL.FULLSCREEN, 20) { icon ->
                         icon.iconCodeProperty().bind(
                             primaryStage.fullScreenProperty()
                                 .toggleBinding(Material2AL.FULLSCREEN_EXIT, Material2AL.FULLSCREEN)
@@ -60,10 +52,10 @@ class MainView : View("TTS Explorer") {
                             primaryStage.isFullScreen = !primaryStage.isFullScreen
                         }
                     }
-                    fontButton(Material2MZ.MINIMIZE, 20) {
+                    icon(Material2MZ.MINIMIZE, 20) {
                         setOnMouseClicked { primaryStage.isIconified = true }
                     }
-                    fontButton(Material2AL.CLOSE, 20) {
+                    icon(Material2AL.CLOSE, 20) {
                         setOnMouseClicked { primaryStage.close() }
                     }
                 }
@@ -74,19 +66,33 @@ class MainView : View("TTS Explorer") {
                 vgrow = Priority.ALWAYS
                 hgrow = Priority.ALWAYS
             }
-            if (savePath().value == null) {
+            val saveDirPath = Preferences.saveDirPath(this@MainView)
+//            if (saveDirPath.value == null) {
                 vbox(15, Pos.CENTER) {
-                    label("Tabletop Simulator com.github.breadmoirai.ttsexplorer.model.Save Directory")
+                    val label = label("Tabletop Simulator Save Directory") {
+                        isAnimateLines = false
+                        lineStrokeWidth = 0.0
+                    }
                     hbox(10, Pos.CENTER) {
-                        textfield(savePath())
-                        fontButton(Material2AL.FOLDER) {
+                        textfield {
+                            style {
+                                prefWidth = 500.px
+                            }
+                            label.focusedProperty().onChange { focused ->
+                                if (focused) this.requestFocus()
+                            }
+                        }
+                        raisedButton(graphic = FontIcon(Material2AL.FOLDER)) {
+                            style {
+                                backgroundColor = multi(Color.WHITESMOKE)
+                                depthLevel = DepthLevel.LEVEL5
+                            }
                             onLeftClick {
                                 FileChooser().showOpenDialog(scene.window)
                             }
                         }
-
                     }
-                }
+//                }
             }
         }
     }

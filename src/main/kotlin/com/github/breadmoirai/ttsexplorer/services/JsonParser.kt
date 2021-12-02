@@ -13,7 +13,7 @@ object JsonParser {
         .build()
 
     @OptIn(ExperimentalStdlibApi::class)
-    inline fun <reified T> File.parse(): T {
+    inline fun <reified T> File.parse(): T? {
         return moshi.adapter<T>().fromJson(this.source().buffer())
     }
 }

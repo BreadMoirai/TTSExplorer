@@ -1,10 +1,15 @@
 package com.github.breadmoirai.ttsexplorer.services
 
-import com.github.breadmoirai.ttsexplorer.model.WorkshopFileInfo
 import org.apache.commons.lang3.SystemUtils
 import java.io.File
 
-class TTSDirectory(private val rootDir: File) {
+class TTSDirectory private constructor(
+    private val rootDir: File,
+    private val _error: Errorable
+) : IErrorable by _error {
+
+    constructor(rootDir: File) : this(rootDir, Errorable())
+
     companion object {
         fun defaultDir(): File? {
             return when {
@@ -22,38 +27,30 @@ class TTSDirectory(private val rootDir: File) {
     private val modsDir = rootDir.resolve("Mods")
     private val saveDir = rootDir.resolve("Saves")
 
-    fun validate(): ValidationResult {
-        if (!rootDir.exists()) return ValidationResult.fail("File path provided does not exist!")
-        if (!rootDir.isDirectory) return ValidationResult.fail("File path provided is not a directory!")
-        if (!rootDir.canRead())
-            return ValidationResult.fail("This application does not have permissions to read this directory!")
-        val list = rootDir.list()
-        if (list == null || list.isEmpty()) return ValidationResult.fail("The directory provided is empty!")
-        if (!modsDir.exists() && !saveDir.exists()) {
-            return ValidationResult.fail("Could not find Saves directory or Mods directory")
+    init {
+        run {
+            if (!rootDir.exists()) {
+                return@run _error("File path provided does not exist!")
+            }
+            if (!rootDir.isDirectory) {
+                return@run _error("File path provided is not a directory!")
+            }
+            if (!rootDir.canRead()) {
+                return@run _error("This application does not have permissions to read this directory!")
+            }
+            val list = rootDir.list()
+            if (list == null || list.isEmpty()) {
+                return@run _error("The directory provided is empty!")
+            }
+            if (!modsDir.exists() && !saveDir.exists()) {
+                return@run _error("Could not find Saves directory or Mods directory")
+            }
         }
-        // TODO
-        return ValidationResult.success()
     }
+
 }
 
 class ModsDirectory(private val modDir: File) {
-    private val modListFile: File = modDir.resolve("WorkshopFileInfos.json")
-    val hasModList: Boolean
-        get() = _modList != null
-    private val _modList: List<WorkshopFileInfo>? by lazy(::readModList)
-    val modList: List<WorkshopFileInfo>
-        get() = _modList!!
+    val modList: ModList by lazy { ModList(modDir.resolve("WorkshopFileInfos.json")) }
 
-    private fun readModList(): List<WorkshopFileInfo>? {
-        
-    }
-
-}
-
-data class ValidationResult(val success: Boolean, val message: String) {
-    companion object {
-        fun success() = ValidationResult(true, "")
-        fun fail(message: String) = ValidationResult(false, message)
-    }
 }
