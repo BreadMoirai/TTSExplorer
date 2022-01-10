@@ -23,7 +23,7 @@ class ModList private constructor(private val modListFile: File, private val _er
                         "to read WorkshopFileInfos.json at ${modListFile.absolutePath}. " +
                         "Try launching this application in administrator mode.")
             }
-            val list = modListFile.parse<List<WorkshopFileInfo>>()
+            val list = modListFile.parse<List<WorkshopFileInfo>>().get()
             if (list == null) {
                 return@run _error("Could not successfully parse WorkshopFileInfos.json.")
             }

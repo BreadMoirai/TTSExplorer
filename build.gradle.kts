@@ -23,8 +23,8 @@ dependencies {
     val jmetro_version: String by rootProject
     val moshi_version: String by rootProject
 
-    implementation(kotlin("stdlib-jdk8"))
-    implementation(kotlin("reflect"))
+    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.0")
+    implementation("org.jetbrains.kotlin:kotlin-reflect:1.6.0")
     implementation("no.tornado:tornadofx:$tornadofx_version")
     implementation("org.jfxtras:jmetro:$jmetro_version")
     implementation("com.squareup.moshi:moshi:$moshi_version")
@@ -32,9 +32,9 @@ dependencies {
     implementation("com.squareup.moshi:moshi-adapters:$moshi_version")
 
     // https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
-    implementation("org.apache.commons:commons-lang3:3.0")
+    implementation("org.apache.commons:commons-lang3:3.12.0")
 
-    testImplementation(kotlin("test-junit"))
+    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.6.0")
 
 }
 

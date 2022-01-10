@@ -27,6 +27,8 @@ class TTSDirectory private constructor(
     private val modsDir = rootDir.resolve("Mods")
     private val saveDir = rootDir.resolve("Saves")
 
+    val mods = ModsDirectory(modsDir)
+
     init {
         run {
             if (!rootDir.exists()) {
@@ -45,12 +47,10 @@ class TTSDirectory private constructor(
             if (!modsDir.exists() && !saveDir.exists()) {
                 return@run _error("Could not find Saves directory or Mods directory")
             }
+            if (mods.hasError) {
+                return@run _error(mods.error)
+            }
         }
     }
-
 }
 
-class ModsDirectory(private val modDir: File) {
-    val modList: ModList by lazy { ModList(modDir.resolve("WorkshopFileInfos.json")) }
-
-}

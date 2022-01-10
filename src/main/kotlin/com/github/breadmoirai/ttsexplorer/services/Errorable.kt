@@ -8,7 +8,7 @@ interface IErrorable {
 class Errorable : IErrorable, (String) -> Unit {
     private var _error: String? = null
     override val error: String
-        get() = _error!!
+        get() = _error ?: ""
     override val hasError: Boolean
         get() = _error != null
 
